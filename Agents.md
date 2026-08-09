@@ -36,3 +36,8 @@ For CLI changes, also verify:
 ```bash
 env -u JAVA_HOME ./sorty.sh --help
 ```
+
+
+## Strict Rules
+- do not update anything in the alogithms/impl folder. i want to implement them my own
+

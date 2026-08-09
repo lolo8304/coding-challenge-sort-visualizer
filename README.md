@@ -79,7 +79,7 @@ Options:
 - `--seed=SEED`: random seed. Default: `0`.
 - `-from`, `--from=MIN`: smallest generated number. Default: `10`.
 - `-to`, `--to=MAX`: largest generated number. Default: `100`.
-- `--algorithm=ALGORITHM`: sorting algorithm: `BUBBLE`, `INSERT`, `SELECTION`, or `MERGE`. Default: `BUBBLE`.
+- `--algorithm=ALGORITHM`: sorting algorithm: `BUBBLE`, `INSERT`, `SELECTION`, `MERGE`, `QUICK`, or `HEAP`. Default: `BUBBLE`.
 - `-d`, `--descending`: sort largest to smallest.
 - `-l`, `--lanterna`: use fullscreen Lanterna text UI. This is the default.
 - `--wait`: keep the final Lanterna screen open until any key is pressed.
@@ -105,6 +105,8 @@ we have implemented the following sort alogithms.
 - Insertion Sort - https://en.wikipedia.org/wiki/Insertion_sort
 - Selection Sort - https://de.wikipedia.org/wiki/Selectionsort
 - Merge Sort - https://de.wikipedia.org/wiki/Mergesort
+- Quick Sort - https://de.wikipedia.org/wiki/Quicksort
+- Heap Sort - https://de.wikipedia.org/wiki/Heapsort
 
 ## UI Behavior
 
@@ -146,6 +148,8 @@ The core flow is:
 - `InsertSorter`: insertion sort implementation.
 - `SelectionSorter`: selection sort implementation.
 - `MergeSorter`: merge sort implementation.
+- `QuickSorter`: quick sort implementation.
+- `HeapSorter`: heap sort placeholder.
 - `LanternaUiDelegate`: fullscreen terminal visualization.
 - `ConsoleUiDelegate`: console event logging.
 - `NoOpUiDelegate`: quiet test/default delegate for non-CLI sorter use.

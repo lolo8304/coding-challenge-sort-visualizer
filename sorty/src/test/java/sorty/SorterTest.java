@@ -41,4 +41,20 @@ class SorterTest {
         assertEquals(SortAlgorithm.MERGE, sorter.getAlgorithm());
         assertEquals("MergeSorter", sorter.getSorter().getClass().getSimpleName());
     }
+
+    @Test
+    void constructsQuickSorter() {
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.QUICK, SortSpeed.FAST);
+
+        assertEquals(SortAlgorithm.QUICK, sorter.getAlgorithm());
+        assertEquals("QuickSorter", sorter.getSorter().getClass().getSimpleName());
+    }
+
+    @Test
+    void constructsHeapSorter() {
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.HEAP, SortSpeed.FAST);
+
+        assertEquals(SortAlgorithm.HEAP, sorter.getAlgorithm());
+        assertEquals("HeapSorter", sorter.getSorter().getClass().getSimpleName());
+    }
 }

@@ -74,6 +74,20 @@ class SortyTest {
     }
 
     @Test
+    void quickAlgorithmSortsConsoleOutput() {
+        String output = execute("--console", "-n", "4", "--seed", "1", "--algorithm", "QUICK");
+
+        assertEquals("14 45 49 95 ", output);
+    }
+
+    @Test
+    void heapAlgorithmIsAccepted() {
+        CommandLine commandLine = new CommandLine(new Sorty());
+
+        assertEquals(0, commandLine.execute("--console", "-n", "4", "--seed", "1", "--algorithm", "HEAP"));
+    }
+
+    @Test
     void commandRejectsMultipleStartupSpeeds() {
         int exitCode = new CommandLine(new Sorty()).execute("-n", "3", "--slow", "--fast");
 

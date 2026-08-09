@@ -1,10 +1,7 @@
 package sorty;
 
-import sorty.algorithms.impl.BubbleSorter;
+import sorty.algorithms.impl.*;
 import sorty.algorithms.DefaultSorter;
-import sorty.algorithms.impl.InsertionSorter;
-import sorty.algorithms.impl.MergeSorter;
-import sorty.algorithms.impl.SelectionSorter;
 
 public enum SortAlgorithm {
     BUBBLE {
@@ -29,6 +26,18 @@ public enum SortAlgorithm {
         @Override
         public DefaultSorter createSorter() {
             return new MergeSorter();
+        }
+    },
+    QUICK {
+        @Override
+        public DefaultSorter createSorter() {
+            return new QuickSorter();
+        }
+    },
+    HEAP {
+        @Override
+        public DefaultSorter createSorter() {
+            return new HeapSorter();
         }
     };
 
