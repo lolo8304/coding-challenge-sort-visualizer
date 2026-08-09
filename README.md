@@ -69,8 +69,8 @@ Pause the fullscreen UI with Space. Press `s` while running or paused to restart
 ## CLI Options
 
 ```text
-Usage: sorty [-cdfhlmsvV] [-vv] [-from=MIN] [-n=TOTAL] [--seed=SEED]
-             [--speed=SPEED] [-to=MAX]
+Usage: sorty [-cdfhlmsvV] [-vv] [--algorithm=ALGORITHM] [-from=MIN] [-n=TOTAL]
+             [--seed=SEED] [--speed=SPEED] [-to=MAX]
 ```
 
 Options:
@@ -79,6 +79,7 @@ Options:
 - `--seed=SEED`: random seed. Default: `0`.
 - `-from`, `--from=MIN`: smallest generated number. Default: `10`.
 - `-to`, `--to=MAX`: largest generated number. Default: `100`.
+- `--algorithm=ALGORITHM`: sorting algorithm: `BUBBLE` or `INSERT`. Default: `BUBBLE`.
 - `-d`, `--descending`: sort largest to smallest.
 - `-l`, `--lanterna`: use fullscreen Lanterna text UI. This is the default.
 - `-c`, `--console`: use console UI logging instead of Lanterna.
@@ -103,7 +104,9 @@ Lanterna renders bars in the terminal: was an Google Code and now on github http
 - The value is displayed centered above its bar.
 - Compared indices are highlighted yellow.
 - Swapped indices are highlighted orange.
-- The header displays number count, total operations, comparisons, swaps, and value accesses.
+- Accessed values are highlighted green.
+- Written values are highlighted dark green.
+- The header displays number count, total operations, comparisons, swaps, value accesses, and writes.
 - Press Space to pause the animation, `n` to step one frame, or `s` to restart from the original values.
 - The final screen remains visible for `500ms` as part of the close procedure.
 
@@ -129,7 +132,8 @@ The core flow is:
 - `Sorter`: random number generation and algorithm wiring.
 - `EventHandler`: protocol counters and speed throttling.
 - `SorterProtocol`: UI/event protocol.
-- `BubbleSorter`: current sorting algorithm.
+- `BubbleSorter`: bubble sort implementation.
+- `InsertSorter`: insertion sort implementation.
 - `LanternaUiDelegate`: fullscreen terminal visualization.
 - `ConsoleUiDelegate`: console event logging.
 - `NoOpUiDelegate`: quiet test/default delegate for non-CLI sorter use.

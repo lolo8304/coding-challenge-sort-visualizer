@@ -25,4 +25,12 @@ class SorterTest {
 
         assertEquals(List.of(4, 3, 1, 1, -2), sorted.getNumbersAsList());
     }
+
+    @Test
+    void constructsInsertionSorter() {
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.INSERT, SortSpeed.FAST);
+
+        assertEquals(SortAlgorithm.INSERT, sorter.getAlgorithm());
+        assertEquals("InsertSorter", sorter.getSorter().getClass().getSimpleName());
+    }
 }

@@ -116,6 +116,14 @@ public class Sorty implements Callable<Integer> {
     )
     private SortSpeed speed;
 
+    @Option(
+        names = "--algorithm",
+        defaultValue = "BUBBLE",
+        paramLabel = "ALGORITHM",
+        description = "Sorting algorithm: BUBBLE or INSERT. Default: ${DEFAULT-VALUE}."
+    )
+    private SortAlgorithm algorithm;
+
     public static void main(String[] args) {
         int exitCode = new CommandLine(new Sorty()).execute(args);
         System.exit(exitCode);
@@ -153,7 +161,7 @@ public class Sorty implements Callable<Integer> {
 
         SortDirection direction = descending ? SortDirection.DESCENDING : SortDirection.ASCENDING;
         try {
-            var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedSpeed());
+            var sorter = new Sorter(totalNumbers, from, to, direction, seed, algorithm, selectedSpeed());
             var uiDelegate = this.uiDelegate();
             sorter.setUiDelegate(uiDelegate);
             var result = sorter.sort();

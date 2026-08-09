@@ -23,6 +23,7 @@ import sorty.SortRestartRequestedException;
 public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegate {
     private static final int CLOSE_DELAY_MILLIS = 500;
     private static final TextColor ORANGE = new TextColor.RGB(255, 165, 0);
+    private static final TextColor DARK_GREEN = new TextColor.RGB(0, 100, 0);
 
     private Integer[] numbers = new Integer[0];
     private Screen screen;
@@ -31,6 +32,7 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
     private int compare;
     private int swap;
     private int access;
+    private int write;
     private TerminalSize lastSize;
     private boolean completeRefreshRequired = true;
     private Thread shutdownHook;
@@ -48,6 +50,7 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
         this.compare = 0;
         this.swap = 0;
         this.access = 0;
+        this.write = 0;
         this.completeRefreshRequired = true;
 
         if (screen != null) {
@@ -100,7 +103,18 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
     @Override
     public int at(int index) {
         this.access++;
+        total++;
+        draw(index, -1, "at");
         return numbers[index];
+    }
+
+    @Override
+    public int put(int index, int value) {
+        this.write++;
+        total++;
+        numbers[index] = value;
+        draw(index, -1, "put");
+        return value;
     }
 
     private void draw(int index1, int index2, String action) {
@@ -224,7 +238,9 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
                     + " total=" + total
                     + " compare=" + compare
                     + " swap=" + swap
-                    + " access=" + access + " (space pause, n step, s restart)",
+                    + " access=" + access
+                    + " write=" + write
+                    + " (space pause, n step, s restart)",
                 size.getColumns()
             )
         );
@@ -274,6 +290,12 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
         }
         if ("swap".equals(action)) {
             return ORANGE;
+        }
+        if ("at".equals(action)) {
+            return TextColor.ANSI.GREEN;
+        }
+        if ("put".equals(action)) {
+            return DARK_GREEN;
         }
         return TextColor.ANSI.YELLOW;
     }

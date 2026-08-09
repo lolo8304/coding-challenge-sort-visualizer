@@ -18,6 +18,7 @@ public class EventHandler implements SorterProtocol {
     private int totalCompare = 0;
     private int totalSwap = 0;
     private int totalAccess = 0;
+    private int totalWrite = 0;
 
     @Builder
     public EventHandler(int triggerEvery, SorterProtocol forwarder, SortSpeed speed) {
@@ -70,6 +71,12 @@ public class EventHandler implements SorterProtocol {
     public int at(int index) {
         this.totalAccess++;
         return this.forwarder.at(index);
+    }
+
+    @Override
+    public int put(int index, int value) {
+        this.totalWrite++;
+        return this.forwarder.put(index, value);
     }
 
     private void delay() {

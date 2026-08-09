@@ -53,6 +53,12 @@ public class ConsoleUiDelegate implements SorterProtocol, NumbersAwareUiDelegate
         return numbers[index];
     }
 
+    @Override
+    public int put(int index, int value) {
+        numbers[index] = value;
+        return value;
+    }
+
     private void log(String title, int index1, int index2) {
         System.out.println(title + " " + index1 + " - " + index2);
     }

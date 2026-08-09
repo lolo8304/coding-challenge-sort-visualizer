@@ -31,12 +31,17 @@ public class DefaultSorter {
     }
 
     protected State shouldSwap(int index1, int index2, SortDirection direction) {
-        var at1 = this.sorter.at(index1);
-        var at2 = this.sorter.at(index2);
+        var at1 = this.getAt(index1);
+        var at2 = this.getAt(index2);
         this.getSorter().compare(index1, index2);
         var shouldSwap = direction == SortDirection.ASCENDING ? at1 > at2 : at1 < at2;
         return new State(index1, at1, index2, at2, shouldSwap);
     }
+
+    protected boolean shouldSwapValues(int at1, int at2, SortDirection direction) {
+        return direction == SortDirection.ASCENDING ? at1 > at2 : at1 < at2;
+    }
+
 
     protected void swap(State state) {
         state.swap(this.getSorter(), numbers);
@@ -49,5 +54,14 @@ public class DefaultSorter {
             this.swap(state);
         }
         return needsSwap;
+    }
+
+    protected int getAt(int index) {
+        this.sorter.at(index);
+        return this.numbers[index];
+    }
+    protected void putAt(int index, int value) {
+        this.numbers[index] = value;
+        this.sorter.put(index, value);
     }
 }

@@ -52,6 +52,20 @@ class SortyTest {
     }
 
     @Test
+    void algorithmFlagIsRecognized() {
+        CommandLine commandLine = new CommandLine(new Sorty());
+
+        assertTrue(commandLine.getCommandSpec().findOption("--algorithm").isOption());
+    }
+
+    @Test
+    void insertAlgorithmSortsConsoleOutput() {
+        String output = execute("--console", "-n", "4", "--seed", "1", "--algorithm", "INSERT");
+
+        assertEquals("14 45 49 95 ", output);
+    }
+
+    @Test
     void commandRejectsMultipleStartupSpeeds() {
         int exitCode = new CommandLine(new Sorty()).execute("-n", "3", "--slow", "--fast");
 
