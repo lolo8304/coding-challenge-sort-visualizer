@@ -120,7 +120,7 @@ public class Sorty implements Callable<Integer> {
         names = "--algorithm",
         defaultValue = "BUBBLE",
         paramLabel = "ALGORITHM",
-        description = "Sorting algorithm: BUBBLE or INSERT. Default: ${DEFAULT-VALUE}."
+        description = "Sorting algorithm: BUBBLE or INSERT or SELECTION. Default: ${DEFAULT-VALUE}."
     )
     private SortAlgorithm algorithm;
 

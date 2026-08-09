@@ -3,6 +3,7 @@ package sorty;
 import sorty.algorithms.BubbleSorter;
 import sorty.algorithms.DefaultSorter;
 import sorty.algorithms.InsertSorter;
+import sorty.algorithms.SelectionSorter;
 
 public enum SortAlgorithm {
     BUBBLE {
@@ -15,6 +16,12 @@ public enum SortAlgorithm {
         @Override
         public DefaultSorter createSorter() {
             return new InsertSorter();
+        }
+    },
+    SELECTION {
+        @Override
+        public DefaultSorter createSorter() {
+            return new SelectionSorter();
         }
     };
 
