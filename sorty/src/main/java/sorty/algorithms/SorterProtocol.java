@@ -7,4 +7,5 @@ public interface SorterProtocol {
     void compare(int index1, int index2);
     void swap(int index1, int index2);
     int at(int index);
+    int put(int index, int value);
 }

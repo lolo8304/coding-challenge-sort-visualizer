@@ -20,14 +20,7 @@ public class BubbleSorter extends DefaultSorter {
 
     private void sortUntil(int index, SortDirection direction) {
         for (int i = 0; i < index; i++) {
-            this.getSorter().compare(i, i+1);
-            var state = this.shouldSwap(i, i + 1, direction);
-            if (state.shouldSwap()) {
-                var value = state.val1();
-                this.numbers[i] = state.val2();
-                this.numbers[i+1] = value;
-                this.sorter.swap(i, i+1);
-            }
+            this.swapIfNeeded(i, i + 1, direction);
         }
     }
 
