@@ -1,9 +1,9 @@
 package sorty;
 
-import sorty.algorithms.BubbleSorter;
+import sorty.algorithms.impl.BubbleSorter;
 import sorty.algorithms.DefaultSorter;
-import sorty.algorithms.InsertSorter;
-import sorty.algorithms.SelectionSorter;
+import sorty.algorithms.impl.InsertSorter;
+import sorty.algorithms.impl.SelectionSorter;
 
 public enum SortAlgorithm {
     BUBBLE {

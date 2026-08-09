@@ -1,9 +1,11 @@
-package sorty.algorithms;
+package sorty.algorithms.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import sorty.SortDirection;
+import sorty.algorithms.DefaultSorter;
+import sorty.algorithms.State;
 
 @Getter
 @Setter

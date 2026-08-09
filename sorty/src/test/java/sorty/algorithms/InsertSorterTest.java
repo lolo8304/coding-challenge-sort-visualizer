@@ -2,6 +2,7 @@ package sorty.algorithms;
 
 import org.junit.jupiter.api.Test;
 import sorty.SortDirection;
+import sorty.algorithms.impl.InsertSorter;
 
 import java.util.Arrays;
 

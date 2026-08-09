@@ -1,7 +1,8 @@
-package sorty.algorithms;
+package sorty.algorithms.impl;
 
 import lombok.*;
 import sorty.SortDirection;
+import sorty.algorithms.DefaultSorter;
 
 @Getter
 @Setter
