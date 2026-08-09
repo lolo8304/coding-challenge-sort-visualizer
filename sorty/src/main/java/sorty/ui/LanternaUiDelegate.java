@@ -18,6 +18,7 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 import sorty.algorithms.SorterProtocol;
 import sorty.SortInterruptedException;
+import sorty.SortRestartRequestedException;
 
 public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegate {
     private static final int CLOSE_DELAY_MILLIS = 500;
@@ -33,6 +34,7 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
     private TerminalSize lastSize;
     private boolean completeRefreshRequired = true;
     private Thread shutdownHook;
+    private boolean debugFrameByFrame = false;
 
     @Override
     public void setNumbers(Integer[] numbers) {
@@ -42,6 +44,17 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
     @Override
     public void start(String algorithm, int size) {
         this.algorithm = algorithm;
+        this.total = 0;
+        this.compare = 0;
+        this.swap = 0;
+        this.access = 0;
+        this.completeRefreshRequired = true;
+
+        if (screen != null) {
+            draw(-1, -1, "start");
+            return;
+        }
+
         try {
             Terminal terminal = new DefaultTerminalFactory().createTerminal();
             this.screen = new TerminalScreen(terminal);
@@ -130,12 +143,14 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
             return;
         }
 
+        if (this.debugFrameByFrame) {
+            this.debugFrameByFrame = false;
+            waitForResume();
+        }
+
         KeyStroke keyStroke = screen.pollInput();
         while (keyStroke != null) {
-            if (isInterrupt(keyStroke)) {
-                closeScreen();
-                throw new SortInterruptedException();
-            }
+            abortOrRestartIfRequested(keyStroke);
             if (isPause(keyStroke)) {
                 waitForResume();
             }
@@ -146,11 +161,21 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
     private void waitForResume() throws IOException {
         KeyStroke keyStroke = screen.readInput();
         while (keyStroke != null) {
-            if (isInterrupt(keyStroke)) {
-                closeScreen();
-                throw new SortInterruptedException();
+            abortOrRestartIfRequested(keyStroke);
+            if (isNext(keyStroke)) {
+                this.debugFrameByFrame = true;
             }
             return;
+        }
+    }
+
+    void abortOrRestartIfRequested(KeyStroke keyStroke) {
+        if (isInterrupt(keyStroke)) {
+            closeScreen();
+            throw new SortInterruptedException();
+        }
+        if (isRestart(keyStroke)) {
+            throw new SortRestartRequestedException();
         }
     }
 
@@ -168,8 +193,22 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
     private boolean isPause(KeyStroke keyStroke) {
         Character character = keyStroke.getCharacter();
         return keyStroke.getKeyType() == KeyType.Character
-            && character != null
-            && character == ' ';
+                && character != null
+                && character == ' ';
+    }
+
+    private boolean isRestart(KeyStroke keyStroke) {
+        Character character = keyStroke.getCharacter();
+        return keyStroke.getKeyType() == KeyType.Character
+                && character != null
+                && character == 's';
+    }
+
+    private boolean isNext(KeyStroke keyStroke) {
+        Character character = keyStroke.getCharacter();
+        return keyStroke.getKeyType() == KeyType.Character
+                && character != null
+                && character == 'n';
     }
 
     private void drawHeader(TextGraphics graphics, TerminalSize size, String action) {
@@ -185,7 +224,7 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
                     + " total=" + total
                     + " compare=" + compare
                     + " swap=" + swap
-                    + " access=" + access,
+                    + " access=" + access + " (space pause, n step, s restart)",
                 size.getColumns()
             )
         );

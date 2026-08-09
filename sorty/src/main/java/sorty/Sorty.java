@@ -153,7 +153,10 @@ public class Sorty implements Callable<Integer> {
 
         SortDirection direction = descending ? SortDirection.DESCENDING : SortDirection.ASCENDING;
         try {
-            var result = new Sorter(totalNumbers, from, to, direction, seed, uiDelegate(), selectedSpeed()).sort();
+            var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedSpeed());
+            var uiDelegate = this.uiDelegate();
+            sorter.setUiDelegate(uiDelegate);
+            var result = sorter.sort();
             this.formatResult(result);
             return 0;
         } catch (SortInterruptedException exception) {

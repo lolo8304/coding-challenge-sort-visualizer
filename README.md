@@ -64,7 +64,7 @@ Custom generated number range:
 
 Stop the fullscreen UI with Ctrl-C.
 
-Pause the fullscreen UI with Space. Press any other key to resume.
+Pause the fullscreen UI with Space. Press `s` while running or paused to restart from the original values.
 
 ## CLI Options
 
@@ -104,7 +104,7 @@ Lanterna renders bars in the terminal: was an Google Code and now on github http
 - Compared indices are highlighted yellow.
 - Swapped indices are highlighted orange.
 - The header displays number count, total operations, comparisons, swaps, and value accesses.
-- Press Space to pause the animation, then press any other key to resume.
+- Press Space to pause the animation, `n` to step one frame, or `s` to restart from the original values.
 - The final screen remains visible for `500ms` as part of the close procedure.
 
 Console UI logs protocol events and summary counters when verbose flags are enabled.

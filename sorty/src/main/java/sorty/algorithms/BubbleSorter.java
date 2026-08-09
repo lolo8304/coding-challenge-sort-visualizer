@@ -23,10 +23,10 @@ public class BubbleSorter extends DefaultSorter {
             this.getSorter().compare(i, i+1);
             var state = this.shouldSwap(i, i + 1, direction);
             if (state.shouldSwap()) {
-                this.sorter.swap(i, i+1);
                 var value = state.val1();
                 this.numbers[i] = state.val2();
                 this.numbers[i+1] = value;
+                this.sorter.swap(i, i+1);
             }
         }
     }
