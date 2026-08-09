@@ -1,0 +1,41 @@
+plugins {
+    id 'application'
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(26)
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.46'
+    annotationProcessor 'org.projectlombok:lombok:1.18.46'
+
+    implementation 'info.picocli:picocli:4.7.1'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.1'
+    implementation 'com.googlecode.lanterna:lanterna:3.1.5'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+    testImplementation "org.mockito:mockito-core:5.+"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.7.2'
+
+    implementation("org.slf4j:slf4j-simple:2.0.17")
+}
+
+application {
+    mainClass = 'sorty.Sorty'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += [
+        "-Aproject=${project.group}/${project.name}",
+        '-Xlint:all',
+        '-Xlint:-processing'
+    ]
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

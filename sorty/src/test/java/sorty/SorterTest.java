@@ -1,0 +1,28 @@
+package sorty;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+class SorterTest {
+    @Test
+    void sortsAscendingWithoutMutatingInput() {
+        List<Integer> input = List.of(4, 1, 3, 1, -2);
+
+        var sorted = new TestSorter(input, SortDirection.ASCENDING);
+        sorted.sort();
+
+        assertEquals(List.of(-2, 1, 1, 3, 4), sorted.getNumbersAsList());
+        assertEquals(List.of(4, 1, 3, 1, -2), input);
+    }
+
+    @Test
+    void sortsDescending() {
+        var sorted = new TestSorter(List.of(4, 1, 3, 1, -2), SortDirection.DESCENDING);
+        sorted.sort();
+
+        assertEquals(List.of(4, 3, 1, 1, -2), sorted.getNumbersAsList());
+    }
+}
