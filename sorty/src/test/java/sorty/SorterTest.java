@@ -57,4 +57,12 @@ class SorterTest {
         assertEquals(SortAlgorithm.HEAP, sorter.getAlgorithm());
         assertEquals("HeapSorter", sorter.getSorter().getClass().getSimpleName());
     }
+
+    @Test
+    void constructsShellSorter() {
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.SHELL, SortSpeed.FAST);
+
+        assertEquals(SortAlgorithm.SHELL, sorter.getAlgorithm());
+        assertEquals("ShellSorter", sorter.getSorter().getClass().getSimpleName());
+    }
 }

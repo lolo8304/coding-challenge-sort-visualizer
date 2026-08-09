@@ -39,6 +39,12 @@ public enum SortAlgorithm {
         public DefaultSorter createSorter() {
             return new HeapSorter();
         }
+    },
+    SHELL {
+        @Override
+        public DefaultSorter createSorter() {
+            return new ShellSorter();
+        }
     };
 
     public abstract DefaultSorter createSorter();
