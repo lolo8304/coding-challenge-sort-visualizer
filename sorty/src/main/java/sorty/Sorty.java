@@ -171,7 +171,6 @@ public class Sorty implements Callable<Integer> {
             var uiDelegate = this.uiDelegate();
             sorter.setUiDelegate(uiDelegate);
             var result = sorter.sort();
-            this.formatResult(result);
             return 0;
         } catch (SortInterruptedException exception) {
             return 130;
@@ -210,14 +209,6 @@ public class Sorty implements Callable<Integer> {
             return new ConsoleUiDelegate();
         }
         return new LanternaUiDelegate(wait);
-    }
-
-    private void formatResult(Integer[] numbers) {
-        var builder = new StringBuilder();
-        for (Integer number : numbers) {
-            builder.append(number).append(" ");
-        }
-        System.out.print(builder.toString());
     }
 
     public static boolean verbose() {
