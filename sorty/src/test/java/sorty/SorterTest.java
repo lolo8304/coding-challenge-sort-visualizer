@@ -65,4 +65,12 @@ class SorterTest {
         assertEquals(SortAlgorithm.SHELL, sorter.getAlgorithm());
         assertEquals("ShellSorter", sorter.getSorter().getClass().getSimpleName());
     }
+
+    @Test
+    void constructsRadixSorter() {
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.RADIX, SortSpeed.FAST);
+
+        assertEquals(SortAlgorithm.RADIX, sorter.getAlgorithm());
+        assertEquals("RadixSorter", sorter.getSorter().getClass().getSimpleName());
+    }
 }

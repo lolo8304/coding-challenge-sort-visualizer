@@ -45,6 +45,12 @@ public enum SortAlgorithm {
         public DefaultSorter createSorter() {
             return new ShellSorter();
         }
+    },
+    RADIX {
+        @Override
+        public DefaultSorter createSorter() {
+            return new RadixSorter();
+        }
     };
 
     public abstract DefaultSorter createSorter();

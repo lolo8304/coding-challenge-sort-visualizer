@@ -95,6 +95,13 @@ class SortyTest {
     }
 
     @Test
+    void radixAlgorithmSortsConsoleOutput() {
+        String output = execute("--console", "-n", "4", "--seed", "1", "--algorithm", "RADIX");
+
+        assertEquals("14 45 49 95 ", output);
+    }
+
+    @Test
     void commandRejectsMultipleStartupSpeeds() {
         int exitCode = new CommandLine(new Sorty()).execute("-n", "3", "--slow", "--fast");
 
