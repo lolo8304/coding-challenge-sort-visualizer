@@ -73,4 +73,21 @@ class SorterTest {
         assertEquals(SortAlgorithm.RADIX, sorter.getAlgorithm());
         assertEquals("RadixSorter", sorter.getSorter().getClass().getSimpleName());
     }
+
+    @Test
+    void constructsAdditionalSorters() {
+        assertSorter(SortAlgorithm.COCKTAIL, "CocktailSorter");
+        assertSorter(SortAlgorithm.COMB, "CombSorter");
+        assertSorter(SortAlgorithm.GNOME, "GnomeSorter");
+        assertSorter(SortAlgorithm.TIM, "TimSorter");
+        assertSorter(SortAlgorithm.INTRO, "IntroSorter");
+        assertSorter(SortAlgorithm.BOGO, "BogoSorter");
+    }
+
+    private void assertSorter(SortAlgorithm algorithm, String className) {
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, algorithm, SortSpeed.FAST);
+
+        assertEquals(algorithm, sorter.getAlgorithm());
+        assertEquals(className, sorter.getSorter().getClass().getSimpleName());
+    }
 }

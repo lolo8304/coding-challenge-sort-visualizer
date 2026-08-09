@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -99,6 +100,15 @@ class SortyTest {
         String output = execute("--console", "-n", "4", "--seed", "1", "--algorithm", "RADIX");
 
         assertEquals("14 45 49 95 ", output);
+    }
+
+    @Test
+    void additionalAlgorithmsSortConsoleOutput() {
+        for (String algorithm : List.of("COCKTAIL", "COMB", "GNOME", "TIM", "INTRO", "BOGO")) {
+            String output = execute("--console", "-n", "4", "--seed", "1", "--algorithm", algorithm);
+
+            assertEquals("14 45 49 95 ", output);
+        }
     }
 
     @Test

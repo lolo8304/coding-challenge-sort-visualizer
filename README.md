@@ -79,7 +79,7 @@ Options:
 - `--seed=SEED`: random seed. Default: `0`.
 - `-from`, `--from=MIN`: smallest generated number. Default: `10`.
 - `-to`, `--to=MAX`: largest generated number. Default: `100`.
-- `--algorithm=ALGORITHM`: sorting algorithm: `BUBBLE`, `INSERT`, `SELECTION`, `MERGE`, `QUICK`, `HEAP`, `SHELL`, or `RADIX`. Default: `BUBBLE`.
+- `--algorithm=ALGORITHM`: sorting algorithm: `BUBBLE`, `INSERT`, `SELECTION`, `MERGE`, `QUICK`, `HEAP`, `SHELL`, `RADIX`, `COCKTAIL`, `COMB`, `GNOME`, `TIM`, `INTRO`, or `BOGO`. Default: `BUBBLE`.
 - `-d`, `--descending`: sort largest to smallest.
 - `-l`, `--lanterna`: use fullscreen Lanterna text UI. This is the default.
 - `--wait`: keep the final Lanterna screen open until any key is pressed.
@@ -109,6 +109,12 @@ we have implemented the following sort alogithms.
 - Heap Sort - https://de.wikipedia.org/wiki/Heapsort
 - Shell Sort - https://en.wikipedia.org/wiki/Shellsort
 - Radix Sort - https://en.wikipedia.org/wiki/Radix_sort
+- Cocktail Sort - https://en.wikipedia.org/wiki/Cocktail_shaker_sort
+- Comb Sort - https://en.wikipedia.org/wiki/Comb_sort
+- Gnome Sort - https://en.wikipedia.org/wiki/Gnome_sort
+- Tim Sort - https://en.wikipedia.org/wiki/Timsort
+- Intro Sort - https://en.wikipedia.org/wiki/Introsort
+- Bogo Sort - https://en.wikipedia.org/wiki/Bogosort
 
 ## UI Behavior
 
@@ -154,6 +160,12 @@ The core flow is:
 - `HeapSorter`: heap sort placeholder.
 - `ShellSorter`: shell sort implementation.
 - `RadixSorter`: radix sort implementation.
+- `CocktailSorter`: cocktail shaker sort implementation.
+- `CombSorter`: comb sort implementation.
+- `GnomeSorter`: gnome sort implementation.
+- `TimSorter`: Tim sort implementation.
+- `IntroSorter`: intro sort implementation.
+- `BogoSorter`: bounded bogo sort implementation.
 - `LanternaUiDelegate`: fullscreen terminal visualization.
 - `ConsoleUiDelegate`: console event logging.
 - `NoOpUiDelegate`: quiet test/default delegate for non-CLI sorter use.

@@ -51,6 +51,42 @@ public enum SortAlgorithm {
         public DefaultSorter createSorter() {
             return new RadixSorter();
         }
+    },
+    COCKTAIL {
+        @Override
+        public DefaultSorter createSorter() {
+            return new CocktailSorter();
+        }
+    },
+    COMB {
+        @Override
+        public DefaultSorter createSorter() {
+            return new CombSorter();
+        }
+    },
+    GNOME {
+        @Override
+        public DefaultSorter createSorter() {
+            return new GnomeSorter();
+        }
+    },
+    TIM {
+        @Override
+        public DefaultSorter createSorter() {
+            return new TimSorter();
+        }
+    },
+    INTRO {
+        @Override
+        public DefaultSorter createSorter() {
+            return new IntroSorter();
+        }
+    },
+    BOGO {
+        @Override
+        public DefaultSorter createSorter() {
+            return new BogoSorter();
+        }
     };
 
     public abstract DefaultSorter createSorter();
