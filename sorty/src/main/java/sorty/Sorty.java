@@ -72,19 +72,19 @@ public class Sorty implements Callable<Integer> {
 
     @Option(
         names = {"-s", "--slow"},
-        description = "Use slow visualization speed (100ms)."
+        description = "Use slow visualization speed (200ms)."
     )
     private boolean slow;
 
     @Option(
         names = {"-m", "--medium"},
-        description = "Use medium visualization speed (50ms)."
+        description = "Use medium visualization speed (100ms)."
     )
     private boolean medium;
 
     @Option(
         names = {"-f", "--fast"},
-        description = "Use fast visualization speed (25ms)."
+        description = "Use fast visualization speed (50ms)."
     )
     private boolean fast;
 
@@ -124,7 +124,7 @@ public class Sorty implements Callable<Integer> {
         names = "--speed",
         defaultValue = "MEDIUM",
         paramLabel = "SPEED",
-        description = "Sort visualization speed: FAST=25ms, MEDIUM=50ms, SLOW=100ms. Default: ${DEFAULT-VALUE}."
+        description = "Sort visualization speed: FAST=50ms, MEDIUM=100ms, SLOW=200ms. Default: ${DEFAULT-VALUE}."
     )
     private SortSpeed speed;
 

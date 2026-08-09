@@ -70,13 +70,23 @@ public class EventHandler implements SorterProtocol {
     @Override
     public int at(int index) {
         this.totalAccess++;
-        return this.forwarder.at(index);
+        if (this.nextCounter() == 0) {
+            int value = this.forwarder.at(index);
+            this.delay();
+            return value;
+        }
+        return 0;
     }
 
     @Override
     public int put(int index, int value) {
         this.totalWrite++;
-        return this.forwarder.put(index, value);
+        if (this.nextCounter() == 0) {
+            int result = this.forwarder.put(index, value);
+            this.delay();
+            return result;
+        }
+        return value;
     }
 
     private void delay() {

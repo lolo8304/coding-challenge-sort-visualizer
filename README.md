@@ -64,7 +64,7 @@ Custom generated number range:
 
 Stop the fullscreen UI with Ctrl-C.
 
-Pause the fullscreen UI with Space. Press `s` while running or paused to restart from the original values. Use `--wait` to keep the final screen open until any key is pressed.
+Pause the Lanterna UI with Space. Press `n` while paused to advance one frame, or press `s` while running or paused to restart from the original values. Use `--wait` to keep the final screen open until any key is pressed.
 
 ## CLI Options
 
@@ -88,9 +88,9 @@ Options:
 - `-c`, `--console`: use console UI logging instead of Lanterna.
 - `-v`: verbose output.
 - `-vv`: extra verbose output.
-- `-f`, `--fast`: fast visualization speed, `25ms` delay.
-- `-m`, `--medium`: medium visualization speed, `50ms` delay.
-- `-s`, `--slow`: slow visualization speed, `100ms` delay.
+- `-f`, `--fast`: fast visualization speed, `50ms` delay.
+- `-m`, `--medium`: medium visualization speed, `100ms` delay.
+- `-s`, `--slow`: slow visualization speed, `200ms` delay.
 - `--speed=SPEED`: explicit speed enum: `FAST`, `MEDIUM`, or `SLOW`. Default: `MEDIUM`.
 - `-h`, `--help`: show help.
 - `-V`, `--version`: show version.

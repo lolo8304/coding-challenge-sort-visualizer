@@ -1,9 +1,9 @@
 package sorty;
 
 public enum SortSpeed {
-    FAST(25),
-    MEDIUM(50),
-    SLOW(100);
+    FAST(50),
+    MEDIUM(100),
+    SLOW(200);
 
     private final int delayMillis;
 

@@ -20,7 +20,7 @@ import sorty.SortInterruptedException;
 import sorty.SortRestartRequestedException;
 import sorty.algorithms.SorterProtocol;
 
-public class LanternaGridUiDelegate implements AutoCloseable {
+public final class LanternaGridUiDelegate implements AutoCloseable {
     private static final int CLOSE_DELAY_MILLIS = 500;
     private static final TextColor ORANGE = new TextColor.RGB(255, 165, 0);
     private static final TextColor DARK_GREEN = new TextColor.RGB(0, 100, 0);
@@ -31,6 +31,7 @@ public class LanternaGridUiDelegate implements AutoCloseable {
     private TerminalSize lastSize;
     private boolean completeRefreshRequired = true;
     private Thread shutdownHook;
+    private boolean debugFrameByFrame = false;
 
     public LanternaGridUiDelegate(int panelCount, boolean waitForKeyBeforeClose) {
         if (panelCount != 2 && panelCount != 4) {
@@ -222,16 +223,43 @@ public class LanternaGridUiDelegate implements AutoCloseable {
     }
 
     private void abortIfRequested() throws IOException {
+        if (screen == null) {
+            return;
+        }
+
+        if (this.debugFrameByFrame) {
+            this.debugFrameByFrame = false;
+            waitForResume();
+        }
+
         KeyStroke keyStroke = screen.pollInput();
         while (keyStroke != null) {
-            if (isInterrupt(keyStroke)) {
-                closeScreen();
-                throw new SortInterruptedException();
-            }
-            if (isRestart(keyStroke)) {
-                throw new SortRestartRequestedException();
+            abortOrRestartIfRequested(keyStroke);
+            if (isPause(keyStroke)) {
+                waitForResume();
             }
             keyStroke = screen.pollInput();
+        }
+    }
+
+    private void waitForResume() throws IOException {
+        KeyStroke keyStroke = screen.readInput();
+        while (keyStroke != null) {
+            abortOrRestartIfRequested(keyStroke);
+            if (isNext(keyStroke)) {
+                this.debugFrameByFrame = true;
+            }
+            return;
+        }
+    }
+
+    void abortOrRestartIfRequested(KeyStroke keyStroke) {
+        if (isInterrupt(keyStroke)) {
+            closeScreen();
+            throw new SortInterruptedException();
+        }
+        if (isRestart(keyStroke)) {
+            throw new SortRestartRequestedException();
         }
     }
 
@@ -251,6 +279,20 @@ public class LanternaGridUiDelegate implements AutoCloseable {
         return keyStroke.getKeyType() == KeyType.Character
             && character != null
             && character == 's';
+    }
+
+    private boolean isPause(KeyStroke keyStroke) {
+        Character character = keyStroke.getCharacter();
+        return keyStroke.getKeyType() == KeyType.Character
+            && character != null
+            && character == ' ';
+    }
+
+    private boolean isNext(KeyStroke keyStroke) {
+        Character character = keyStroke.getCharacter();
+        return keyStroke.getKeyType() == KeyType.Character
+            && character != null
+            && character == 'n';
     }
 
     private void closeScreen() {
@@ -439,7 +481,7 @@ public class LanternaGridUiDelegate implements AutoCloseable {
                 + " swap=" + swap
                 + " access=" + access
                 + " write=" + write
-                + " (s restart)";
+                + " (space pause, n step, s restart)";
         }
 
         private TextColor barColor(int index) {
