@@ -35,6 +35,7 @@ class SortyTest {
 
         assertTrue(commandLine.getCommandSpec().findOption("--lanterna").isOption());
         assertTrue(commandLine.getCommandSpec().findOption("-l").isOption());
+        assertTrue(commandLine.getCommandSpec().findOption("--wait").isOption());
     }
 
     @Test
@@ -61,6 +62,13 @@ class SortyTest {
     @Test
     void insertAlgorithmSortsConsoleOutput() {
         String output = execute("--console", "-n", "4", "--seed", "1", "--algorithm", "INSERT");
+
+        assertEquals("14 45 49 95 ", output);
+    }
+
+    @Test
+    void mergeAlgorithmSortsConsoleOutput() {
+        String output = execute("--console", "-n", "4", "--seed", "1", "--algorithm", "MERGE");
 
         assertEquals("14 45 49 95 ", output);
     }

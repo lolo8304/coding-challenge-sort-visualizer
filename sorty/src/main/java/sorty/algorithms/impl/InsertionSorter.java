@@ -10,7 +10,7 @@ import sorty.algorithms.State;
 @Getter
 @Setter
 @AllArgsConstructor
-public class InsertSorter extends DefaultSorter {
+public class InsertionSorter extends DefaultSorter {
 
     @Override
     public void sort(SortDirection direction) {

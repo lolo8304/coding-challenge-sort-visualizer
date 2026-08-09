@@ -31,6 +31,14 @@ class SorterTest {
         var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.INSERT, SortSpeed.FAST);
 
         assertEquals(SortAlgorithm.INSERT, sorter.getAlgorithm());
-        assertEquals("InsertSorter", sorter.getSorter().getClass().getSimpleName());
+        assertEquals("InsertionSorter", sorter.getSorter().getClass().getSimpleName());
+    }
+
+    @Test
+    void constructsMergeSorter() {
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.MERGE, SortSpeed.FAST);
+
+        assertEquals(SortAlgorithm.MERGE, sorter.getAlgorithm());
+        assertEquals("MergeSorter", sorter.getSorter().getClass().getSimpleName());
     }
 }

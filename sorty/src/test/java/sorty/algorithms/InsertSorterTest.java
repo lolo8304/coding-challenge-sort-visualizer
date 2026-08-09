@@ -2,7 +2,7 @@ package sorty.algorithms;
 
 import org.junit.jupiter.api.Test;
 import sorty.SortDirection;
-import sorty.algorithms.impl.InsertSorter;
+import sorty.algorithms.impl.InsertionSorter;
 
 import java.util.Arrays;
 
@@ -17,7 +17,7 @@ public class InsertSorterTest {
         var expected = new Integer[]{2, 3};
         var inspector = new ProtocolInspector();
 
-        var sorter = new InsertSorter();
+        var sorter = new InsertionSorter();
         sorter.setSorter(inspector);
         sorter.setNumbers(input);
 
@@ -38,7 +38,7 @@ public class InsertSorterTest {
         var expected = new Integer[]{1, 2, 3};
         var inspector = new ProtocolInspector();
 
-        var sorter = new InsertSorter();
+        var sorter = new InsertionSorter();
         sorter.setSorter(inspector);
         sorter.setNumbers(input);
 

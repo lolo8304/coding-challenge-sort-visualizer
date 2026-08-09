@@ -37,6 +37,15 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
     private boolean completeRefreshRequired = true;
     private Thread shutdownHook;
     private boolean debugFrameByFrame = false;
+    private final boolean waitForKeyBeforeClose;
+
+    public LanternaUiDelegate() {
+        this(false);
+    }
+
+    public LanternaUiDelegate(boolean waitForKeyBeforeClose) {
+        this.waitForKeyBeforeClose = waitForKeyBeforeClose;
+    }
 
     @Override
     public void setNumbers(Integer[] numbers) {
@@ -326,7 +335,7 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
             return;
         }
         try {
-            pauseBeforeClose();
+            waitBeforeClose();
             screen.stopScreen();
         } catch (IOException exception) {
             throw new IllegalStateException("Could not stop Lanterna UI.", exception);
@@ -362,12 +371,30 @@ public class LanternaUiDelegate implements SorterProtocol, NumbersAwareUiDelegat
         }
     }
 
-    private void pauseBeforeClose() {
+    private void waitBeforeClose() throws IOException {
+        if (waitForKeyBeforeClose) {
+            drainPendingInput();
+            KeyStroke keyStroke = screen.readInput();
+            while (keyStroke == null) {
+                keyStroke = screen.readInput();
+            }
+            if (isInterrupt(keyStroke)) {
+                throw new SortInterruptedException();
+            }
+            return;
+        }
+
         try {
             Thread.sleep(CLOSE_DELAY_MILLIS);
         } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
             throw new SortInterruptedException();
+        }
+    }
+
+    private void drainPendingInput() throws IOException {
+        while (screen.pollInput() != null) {
+            // Ignore buffered input so --wait closes only on a key pressed after the final frame is visible.
         }
     }
 }

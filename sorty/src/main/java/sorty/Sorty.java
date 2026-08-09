@@ -59,6 +59,12 @@ public class Sorty implements Callable<Integer> {
     private boolean lanterna;
 
     @Option(
+        names = "--wait",
+        description = "Keep the final Lanterna screen open until any key is pressed."
+    )
+    private boolean wait;
+
+    @Option(
         names = {"-s", "--slow"},
         description = "Use slow visualization speed (100ms)."
     )
@@ -120,7 +126,7 @@ public class Sorty implements Callable<Integer> {
         names = "--algorithm",
         defaultValue = "BUBBLE",
         paramLabel = "ALGORITHM",
-        description = "Sorting algorithm: BUBBLE or INSERT or SELECTION. Default: ${DEFAULT-VALUE}."
+        description = "Sorting algorithm: BUBBLE, INSERT, SELECTION, or MERGE. Default: ${DEFAULT-VALUE}."
     )
     private SortAlgorithm algorithm;
 
@@ -203,7 +209,7 @@ public class Sorty implements Callable<Integer> {
         if (console) {
             return new ConsoleUiDelegate();
         }
-        return new LanternaUiDelegate();
+        return new LanternaUiDelegate(wait);
     }
 
     private void formatResult(Integer[] numbers) {

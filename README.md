@@ -64,13 +64,13 @@ Custom generated number range:
 
 Stop the fullscreen UI with Ctrl-C.
 
-Pause the fullscreen UI with Space. Press `s` while running or paused to restart from the original values.
+Pause the fullscreen UI with Space. Press `s` while running or paused to restart from the original values. Use `--wait` to keep the final screen open until any key is pressed.
 
 ## CLI Options
 
 ```text
-Usage: sorty [-cdfhlmsvV] [-vv] [--algorithm=ALGORITHM] [-from=MIN] [-n=TOTAL]
-             [--seed=SEED] [--speed=SPEED] [-to=MAX]
+Usage: sorty [-cdfhlmsvV] [-vv] [--wait] [--algorithm=ALGORITHM] [-from=MIN]
+             [-n=TOTAL] [--seed=SEED] [--speed=SPEED] [-to=MAX]
 ```
 
 Options:
@@ -79,9 +79,10 @@ Options:
 - `--seed=SEED`: random seed. Default: `0`.
 - `-from`, `--from=MIN`: smallest generated number. Default: `10`.
 - `-to`, `--to=MAX`: largest generated number. Default: `100`.
-- `--algorithm=ALGORITHM`: sorting algorithm: `BUBBLE` or `INSERT`. Default: `BUBBLE`.
+- `--algorithm=ALGORITHM`: sorting algorithm: `BUBBLE`, `INSERT`, `SELECTION`, or `MERGE`. Default: `BUBBLE`.
 - `-d`, `--descending`: sort largest to smallest.
 - `-l`, `--lanterna`: use fullscreen Lanterna text UI. This is the default.
+- `--wait`: keep the final Lanterna screen open until any key is pressed.
 - `-c`, `--console`: use console UI logging instead of Lanterna.
 - `-v`: verbose output.
 - `-vv`: extra verbose output.
@@ -96,6 +97,15 @@ Only one startup speed shortcut may be selected at a time: `--slow`, `--medium`,
 
 Important: `-s` is the short option for `--slow`. Use `--seed` for random seed values.
 
+## Sort Algorithms
+
+we have implemented the following sort alogithms.
+
+- Bubble Sort - https://de.wikipedia.org/wiki/Bubblesort
+- Insertion Sort - https://en.wikipedia.org/wiki/Insertion_sort
+- Selection Sort - https://de.wikipedia.org/wiki/Selectionsort
+- Merge Sort - https://de.wikipedia.org/wiki/Mergesort
+
 ## UI Behavior
 
 Lanterna renders bars in the terminal: was an Google Code and now on github https://github.com/mabe02/lanterna
@@ -108,7 +118,7 @@ Lanterna renders bars in the terminal: was an Google Code and now on github http
 - Written values are highlighted dark green.
 - The header displays number count, total operations, comparisons, swaps, value accesses, and writes.
 - Press Space to pause the animation, `n` to step one frame, or `s` to restart from the original values.
-- The final screen remains visible for `500ms` as part of the close procedure.
+- By default, the final screen remains visible for `500ms` as part of the close procedure. With `--wait`, it remains visible until any key is pressed.
 
 Console UI logs protocol events and summary counters when verbose flags are enabled.
 
@@ -134,6 +144,8 @@ The core flow is:
 - `SorterProtocol`: UI/event protocol.
 - `BubbleSorter`: bubble sort implementation.
 - `InsertSorter`: insertion sort implementation.
+- `SelectionSorter`: selection sort implementation.
+- `MergeSorter`: merge sort implementation.
 - `LanternaUiDelegate`: fullscreen terminal visualization.
 - `ConsoleUiDelegate`: console event logging.
 - `NoOpUiDelegate`: quiet test/default delegate for non-CLI sorter use.
