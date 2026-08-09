@@ -1,5 +1,10 @@
 package sorty;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
@@ -12,6 +17,7 @@ import picocli.CommandLine.Spec;
 import picocli.CommandLine.Model.CommandSpec;
 import sorty.algorithms.SorterProtocol;
 import sorty.ui.ConsoleUiDelegate;
+import sorty.ui.LanternaGridUiDelegate;
 import sorty.ui.LanternaUiDelegate;
 
 @Command(
@@ -126,9 +132,21 @@ public class Sorty implements Callable<Integer> {
         names = "--algorithm",
         defaultValue = "BUBBLE",
         paramLabel = "ALGORITHM",
-        description = "Sorting algorithm: BUBBLE, INSERT, SELECTION, MERGE, QUICK, HEAP, SHELL, RADIX, COCKTAIL, COMB, GNOME, TIM, INTRO, or BOGO. Default: ${DEFAULT-VALUE}."
+        description = "Sorting algorithm list: comma-separated names or * for all. Default: ${DEFAULT-VALUE}."
     )
-    private SortAlgorithm algorithm;
+    private String algorithm;
+
+    @Option(
+        names = "-2",
+        description = "Run selected algorithms in batches of 2 for split-screen comparison."
+    )
+    private boolean splitTwo;
+
+    @Option(
+        names = "-4",
+        description = "Run selected algorithms in batches of 4 for split-screen comparison."
+    )
+    private boolean splitFour;
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new Sorty()).execute(args);
@@ -161,20 +179,117 @@ public class Sorty implements Callable<Integer> {
                 "Only one of --slow, --medium, or --fast can be selected."
             );
         }
+        if (splitTwo && splitFour) {
+            throw new CommandLine.ParameterException(
+                spec.commandLine(),
+                "Only one of -2 or -4 can be selected."
+            );
+        }
 
         Sorty.VERBOSE = this.verbose || this.verbose2;
         Sorty.VERBOSE2 = this.verbose2;
 
         SortDirection direction = descending ? SortDirection.DESCENDING : SortDirection.ASCENDING;
         try {
-            var sorter = new Sorter(totalNumbers, from, to, direction, seed, algorithm, selectedSpeed());
-            var uiDelegate = this.uiDelegate();
-            sorter.setUiDelegate(uiDelegate);
-            var result = sorter.sort();
+            List<SortAlgorithm> algorithms = selectedAlgorithms();
+            Integer[] input = randomNumbers();
+            int batchSize = selectedBatchSize();
+            for (int start = 0; start < algorithms.size(); start += batchSize) {
+                int end = Math.min(start + batchSize, algorithms.size());
+                boolean isLastBatch = end == algorithms.size();
+                runBatch(algorithms.subList(start, end), input, direction, algorithms.size() > 1, isLastBatch);
+            }
             return 0;
         } catch (SortInterruptedException exception) {
             return 130;
         }
+    }
+
+    private void runBatch(
+        List<SortAlgorithm> algorithms,
+        Integer[] input,
+        SortDirection direction,
+        boolean includeAlgorithmName,
+        boolean isLastBatch
+    ) {
+        int batchSize = selectedBatchSize();
+        if (!console && batchSize > 1) {
+            runLanternaGridBatch(algorithms, input, direction, includeAlgorithmName, batchSize, isLastBatch);
+            return;
+        }
+
+        for (SortAlgorithm selectedAlgorithm : algorithms) {
+            var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedAlgorithm, selectedSpeed());
+            sorter.setUiDelegate(this.uiDelegate(isLastBatch));
+            Integer[] result = sorter.sort(input);
+            formatResult(selectedAlgorithm, result, includeAlgorithmName);
+        }
+    }
+
+    private void runLanternaGridBatch(
+        List<SortAlgorithm> algorithms,
+        Integer[] input,
+        SortDirection direction,
+        boolean includeAlgorithmName,
+        int panelCount,
+        boolean isLastBatch
+    ) {
+        List<Integer[]> results = new ArrayList<>();
+        try (LanternaGridUiDelegate grid = new LanternaGridUiDelegate(panelCount, wait && isLastBatch)) {
+            for (int index = 0; index < algorithms.size(); index++) {
+                SortAlgorithm selectedAlgorithm = algorithms.get(index);
+                var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedAlgorithm, selectedSpeed());
+                sorter.setUiDelegate(grid.panel(index));
+                results.add(sorter.sort(input));
+            }
+        }
+        for (int index = 0; index < algorithms.size(); index++) {
+            formatResult(algorithms.get(index), results.get(index), includeAlgorithmName);
+        }
+    }
+
+    private Integer[] randomNumbers() {
+        int range = Math.toIntExact((long) to - from + 1);
+        Random random = seed > 0 ? new Random(seed) : new Random();
+        return random.ints(totalNumbers, 0, range)
+            .map(value -> from + value)
+            .boxed()
+            .toArray(Integer[]::new);
+    }
+
+    private List<SortAlgorithm> selectedAlgorithms() {
+        if ("*".equals(algorithm.trim())) {
+            return Arrays.asList(SortAlgorithm.values());
+        }
+
+        List<SortAlgorithm> algorithms = new ArrayList<>();
+        for (String value : algorithm.split(",")) {
+            String name = value.trim();
+            if (!name.isEmpty()) {
+                try {
+                    algorithms.add(SortAlgorithm.valueOf(name.toUpperCase(Locale.ROOT)));
+                } catch (IllegalArgumentException exception) {
+                    throw new CommandLine.ParameterException(
+                        spec.commandLine(),
+                        "Unknown algorithm: " + name
+                    );
+                }
+            }
+        }
+        if (algorithms.isEmpty()) {
+            throw new CommandLine.ParameterException(spec.commandLine(), "At least one algorithm must be selected.");
+        }
+        return algorithms;
+    }
+
+    private int selectedBatchSize() {
+        if (splitFour) {
+            return 4;
+        }
+        if (splitTwo) {
+            return 2;
+        }
+        return 1;
     }
 
     private int selectedStartupSpeeds() {
@@ -204,11 +319,25 @@ public class Sorty implements Callable<Integer> {
         return speed;
     }
 
-    private SorterProtocol uiDelegate() {
+    private SorterProtocol uiDelegate(boolean waitForKeyBeforeClose) {
         if (console) {
             return new ConsoleUiDelegate();
         }
-        return new LanternaUiDelegate(wait);
+        return new LanternaUiDelegate(wait && waitForKeyBeforeClose);
+    }
+
+    private void formatResult(SortAlgorithm algorithm, Integer[] numbers, boolean includeAlgorithmName) {
+        var builder = new StringBuilder();
+        if (includeAlgorithmName) {
+            builder.append(algorithm).append(": ");
+        }
+        for (Integer number : numbers) {
+            builder.append(number).append(" ");
+        }
+        if (includeAlgorithmName) {
+            builder.append(System.lineSeparator());
+        }
+        System.out.print(builder.toString());
     }
 
     public static boolean verbose() {

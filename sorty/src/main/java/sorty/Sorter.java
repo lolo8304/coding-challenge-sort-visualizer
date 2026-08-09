@@ -82,6 +82,11 @@ public class Sorter implements SorterDelegate {
         return sortFromInitialNumbers();
     }
 
+    public Integer[] sort(Integer[] numbers) {
+        this.initialNumbers = numbers.clone();
+        return sortFromInitialNumbers();
+    }
+
     private Integer[] sortFromInitialNumbers() {
         while (true) {
             try {

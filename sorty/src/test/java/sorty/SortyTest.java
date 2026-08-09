@@ -58,6 +58,8 @@ class SortyTest {
         CommandLine commandLine = new CommandLine(new Sorty());
 
         assertTrue(commandLine.getCommandSpec().findOption("--algorithm").isOption());
+        assertTrue(commandLine.getCommandSpec().findOption("-2").isOption());
+        assertTrue(commandLine.getCommandSpec().findOption("-4").isOption());
     }
 
     @Test
@@ -109,6 +111,32 @@ class SortyTest {
 
             assertEquals("14 45 49 95 ", output);
         }
+    }
+
+    @Test
+    void commaSeparatedAlgorithmsRunAgainstSameInput() {
+        String output = execute("--console", "-n", "4", "--seed", "1", "--algorithm", "BUBBLE,INSERT");
+
+        assertEquals(
+            "BUBBLE: 14 45 49 95 " + System.lineSeparator()
+                + "INSERT: 14 45 49 95 " + System.lineSeparator(),
+            output
+        );
+    }
+
+    @Test
+    void starRunsAllAlgorithms() {
+        String output = execute("--console", "-n", "2", "--seed", "1", "--algorithm", "*", "-4");
+
+        assertTrue(output.contains("BUBBLE: "));
+        assertTrue(output.contains("BOGO: "));
+    }
+
+    @Test
+    void commandRejectsConflictingSplitOptions() {
+        int exitCode = new CommandLine(new Sorty()).execute("-n", "3", "-2", "-4");
+
+        assertEquals(2, exitCode);
     }
 
     @Test

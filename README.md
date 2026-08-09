@@ -69,7 +69,7 @@ Pause the fullscreen UI with Space. Press `s` while running or paused to restart
 ## CLI Options
 
 ```text
-Usage: sorty [-cdfhlmsvV] [-vv] [--wait] [--algorithm=ALGORITHM] [-from=MIN]
+Usage: sorty [-24cdfhlmsvV] [-vv] [--wait] [--algorithm=ALGORITHM] [-from=MIN]
              [-n=TOTAL] [--seed=SEED] [--speed=SPEED] [-to=MAX]
 ```
 
@@ -79,10 +79,12 @@ Options:
 - `--seed=SEED`: random seed. Default: `0`.
 - `-from`, `--from=MIN`: smallest generated number. Default: `10`.
 - `-to`, `--to=MAX`: largest generated number. Default: `100`.
-- `--algorithm=ALGORITHM`: sorting algorithm: `BUBBLE`, `INSERT`, `SELECTION`, `MERGE`, `QUICK`, `HEAP`, `SHELL`, `RADIX`, `COCKTAIL`, `COMB`, `GNOME`, `TIM`, `INTRO`, or `BOGO`. Default: `BUBBLE`.
+- `--algorithm=ALGORITHM`: sorting algorithm list. Use one name, comma-separated names like `BUBBLE,QUICK`, or `*` for all algorithms. Default: `BUBBLE`.
+- `-2`: run selected algorithms in batches of 2 for split-screen comparison.
+- `-4`: run selected algorithms in batches of 4 for split-screen comparison. With `--algorithm=*`, algorithms are processed in enum order, four at a time.
 - `-d`, `--descending`: sort largest to smallest.
 - `-l`, `--lanterna`: use fullscreen Lanterna text UI. This is the default.
-- `--wait`: keep the final Lanterna screen open until any key is pressed.
+- `--wait`: keep the final Lanterna screen open until any key is pressed. When multiple algorithms or batches run, only the last one waits.
 - `-c`, `--console`: use console UI logging instead of Lanterna.
 - `-v`: verbose output.
 - `-vv`: extra verbose output.
@@ -94,6 +96,7 @@ Options:
 - `-V`, `--version`: show version.
 
 Only one startup speed shortcut may be selected at a time: `--slow`, `--medium`, or `--fast`.
+Only one split option may be selected at a time: `-2` or `-4`.
 
 Important: `-s` is the short option for `--slow`. Use `--seed` for random seed values.
 
