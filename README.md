@@ -115,11 +115,11 @@ Bubble sort - yellow comparing
 ![screenshot-bubble-sort-1.png](images/screenshot-bubble-sort-1.png)
 
 Bubble sort - orange swapping
-![screenshot-bubble-sort-3.png](images/screenshot-bubble-sort-3.png)
+![screenshot-bubble-sort-2.png](images/screenshot-bubble-sort-2.png)
 
 
 Bubble sort - almost done
-![screenshot-bubble-sort-2.png](images/screenshot-bubble-sort-2.png)
+![screenshot-bubble-sort-3.png](images/screenshot-bubble-sort-3.png)
 
 ## Development Notes
 
