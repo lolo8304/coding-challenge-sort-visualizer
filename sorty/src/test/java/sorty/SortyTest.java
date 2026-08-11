@@ -40,16 +40,10 @@ class SortyTest {
     }
 
     @Test
-    void speedFlagIsRecognized() {
+    void delayFlagIsRecognized() {
         CommandLine commandLine = new CommandLine(new Sorty());
 
-        assertTrue(commandLine.getCommandSpec().findOption("--speed").isOption());
-        assertTrue(commandLine.getCommandSpec().findOption("--slow").isOption());
-        assertTrue(commandLine.getCommandSpec().findOption("-s").isOption());
-        assertTrue(commandLine.getCommandSpec().findOption("--medium").isOption());
-        assertTrue(commandLine.getCommandSpec().findOption("-m").isOption());
-        assertTrue(commandLine.getCommandSpec().findOption("--fast").isOption());
-        assertTrue(commandLine.getCommandSpec().findOption("-f").isOption());
+        assertTrue(commandLine.getCommandSpec().findOption("--delay").isOption());
         assertTrue(commandLine.getCommandSpec().findOption("--seed").isOption());
     }
 
@@ -60,6 +54,8 @@ class SortyTest {
         assertTrue(commandLine.getCommandSpec().findOption("--algorithm").isOption());
         assertTrue(commandLine.getCommandSpec().findOption("-2").isOption());
         assertTrue(commandLine.getCommandSpec().findOption("-4").isOption());
+        assertTrue(commandLine.getCommandSpec().findOption("-9").isOption());
+        assertTrue(commandLine.getCommandSpec().findOption("-16").isOption());
     }
 
     @Test
@@ -134,14 +130,14 @@ class SortyTest {
 
     @Test
     void commandRejectsConflictingSplitOptions() {
-        int exitCode = new CommandLine(new Sorty()).execute("-n", "3", "-2", "-4");
+        int exitCode = new CommandLine(new Sorty()).execute("-n", "3", "-9", "-16");
 
         assertEquals(2, exitCode);
     }
 
     @Test
-    void commandRejectsMultipleStartupSpeeds() {
-        int exitCode = new CommandLine(new Sorty()).execute("-n", "3", "--slow", "--fast");
+    void commandRejectsNegativeDelay() {
+        int exitCode = new CommandLine(new Sorty()).execute("-n", "3", "--delay", "-1");
 
         assertEquals(2, exitCode);
     }
@@ -156,9 +152,13 @@ class SortyTest {
     private String execute(String... args) {
         PrintStream originalOut = System.out;
         ByteArrayOutputStream output = new ByteArrayOutputStream();
+        String[] commandArgs = new String[args.length + 2];
+        commandArgs[0] = "--delay";
+        commandArgs[1] = "0";
+        System.arraycopy(args, 0, commandArgs, 2, args.length);
         try {
             System.setOut(new PrintStream(output, true, StandardCharsets.UTF_8));
-            int exitCode = new CommandLine(new Sorty()).execute(args);
+            int exitCode = new CommandLine(new Sorty()).execute(commandArgs);
             assertEquals(0, exitCode);
             return output.toString(StandardCharsets.UTF_8);
         } finally {

@@ -28,7 +28,7 @@ class SorterTest {
 
     @Test
     void constructsInsertionSorter() {
-        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.INSERT, SortSpeed.FAST);
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.INSERT, 0);
 
         assertEquals(SortAlgorithm.INSERT, sorter.getAlgorithm());
         assertEquals("InsertionSorter", sorter.getSorter().getClass().getSimpleName());
@@ -36,7 +36,7 @@ class SorterTest {
 
     @Test
     void constructsMergeSorter() {
-        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.MERGE, SortSpeed.FAST);
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.MERGE, 0);
 
         assertEquals(SortAlgorithm.MERGE, sorter.getAlgorithm());
         assertEquals("MergeSorter", sorter.getSorter().getClass().getSimpleName());
@@ -44,7 +44,7 @@ class SorterTest {
 
     @Test
     void constructsQuickSorter() {
-        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.QUICK, SortSpeed.FAST);
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.QUICK, 0);
 
         assertEquals(SortAlgorithm.QUICK, sorter.getAlgorithm());
         assertEquals("QuickSorter", sorter.getSorter().getClass().getSimpleName());
@@ -52,7 +52,7 @@ class SorterTest {
 
     @Test
     void constructsHeapSorter() {
-        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.HEAP, SortSpeed.FAST);
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.HEAP, 0);
 
         assertEquals(SortAlgorithm.HEAP, sorter.getAlgorithm());
         assertEquals("HeapSorter", sorter.getSorter().getClass().getSimpleName());
@@ -60,7 +60,7 @@ class SorterTest {
 
     @Test
     void constructsShellSorter() {
-        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.SHELL, SortSpeed.FAST);
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.SHELL, 0);
 
         assertEquals(SortAlgorithm.SHELL, sorter.getAlgorithm());
         assertEquals("ShellSorter", sorter.getSorter().getClass().getSimpleName());
@@ -68,7 +68,7 @@ class SorterTest {
 
     @Test
     void constructsRadixSorter() {
-        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.RADIX, SortSpeed.FAST);
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, SortAlgorithm.RADIX, 0);
 
         assertEquals(SortAlgorithm.RADIX, sorter.getAlgorithm());
         assertEquals("RadixSorter", sorter.getSorter().getClass().getSimpleName());
@@ -85,7 +85,7 @@ class SorterTest {
     }
 
     private void assertSorter(SortAlgorithm algorithm, String className) {
-        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, algorithm, SortSpeed.FAST);
+        var sorter = new Sorter(3, 1, 10, SortDirection.ASCENDING, 1, algorithm, 0);
 
         assertEquals(algorithm, sorter.getAlgorithm());
         assertEquals(className, sorter.getSorter().getClass().getSimpleName());

@@ -20,19 +20,19 @@ public class Sorter implements SorterDelegate {
     private final Random random;
     private final DefaultSorter sorter;
     private SorterProtocol uiDelegate;
-    private final SortSpeed speed;
+    private final int delayMillis;
     private Integer[] initialNumbers;
 
     public Sorter(int n, SortDirection direction) {
-        this(n, 1, 100, direction, 0, SortAlgorithm.BUBBLE, SortSpeed.MEDIUM, new NoOpUiDelegate());
+        this(n, 1, 100, direction, 0, SortAlgorithm.BUBBLE, 100, new NoOpUiDelegate());
     }
 
     public Sorter(int n, int from, int to, SortDirection direction, int seed) {
-        this(n, from, to, direction, seed, SortAlgorithm.BUBBLE, SortSpeed.MEDIUM, new NoOpUiDelegate());
+        this(n, from, to, direction, seed, SortAlgorithm.BUBBLE, 100, new NoOpUiDelegate());
     }
 
-    public Sorter(int n, int from, int to, SortDirection direction, int seed, SortSpeed speed) {
-        this(n, from, to, direction, seed, SortAlgorithm.BUBBLE, speed, new NoOpUiDelegate());
+    public Sorter(int n, int from, int to, SortDirection direction, int seed, int delayMillis) {
+        this(n, from, to, direction, seed, SortAlgorithm.BUBBLE, delayMillis, new NoOpUiDelegate());
     }
 
     public Sorter(
@@ -42,9 +42,9 @@ public class Sorter implements SorterDelegate {
         SortDirection direction,
         int seed,
         SortAlgorithm algorithm,
-        SortSpeed speed
+        int delayMillis
     ) {
-        this(n, from, to, direction, seed, algorithm, speed, new NoOpUiDelegate());
+        this(n, from, to, direction, seed, algorithm, delayMillis, new NoOpUiDelegate());
     }
 
     public Sorter(
@@ -54,7 +54,7 @@ public class Sorter implements SorterDelegate {
         SortDirection direction,
         int seed,
         SortAlgorithm algorithm,
-        SortSpeed speed,
+        int delayMillis,
         SorterProtocol uiDelegate
     ) {
         this.n = n;
@@ -65,7 +65,7 @@ public class Sorter implements SorterDelegate {
         this.random = seed > 0 ? new Random(seed) : new Random();
         this.sorter = algorithm.createSorter();
         this.uiDelegate = uiDelegate;
-        this.speed = speed;
+        this.delayMillis = delayMillis;
     }
 
     public Integer[] randomNumbers() {
@@ -102,7 +102,7 @@ public class Sorter implements SorterDelegate {
         if (this.uiDelegate instanceof NumbersAwareUiDelegate numbersAwareUiDelegate) {
             numbersAwareUiDelegate.setNumbers(numbers);
         }
-        this.sorter.setSorter(new EventHandler(1, this.uiDelegate, speed));
+        this.sorter.setSorter(new EventHandler(1, this.uiDelegate, delayMillis));
         this.sorter.setNumbers(numbers);
         sorter.sort(this.direction);
     }

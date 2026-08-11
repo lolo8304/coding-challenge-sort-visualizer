@@ -34,8 +34,8 @@ public final class LanternaGridUiDelegate implements AutoCloseable {
     private boolean debugFrameByFrame = false;
 
     public LanternaGridUiDelegate(int panelCount, boolean waitForKeyBeforeClose) {
-        if (panelCount != 2 && panelCount != 4) {
-            throw new IllegalArgumentException("Lanterna grid supports 2 or 4 panels.");
+        if (panelCount != 2 && panelCount != 4 && panelCount != 9 && panelCount != 16) {
+            throw new IllegalArgumentException("Lanterna grid supports 2, 4, 9, or 16 panels.");
         }
         this.waitForKeyBeforeClose = waitForKeyBeforeClose;
         this.panels = new Panel[panelCount];
@@ -113,24 +113,22 @@ public final class LanternaGridUiDelegate implements AutoCloseable {
     }
 
     private Bounds panelBounds(TerminalSize size, int panelIndex) {
-        int columns = size.getColumns();
-        int rows = size.getRows();
-        if (panels.length == 2) {
-            int width = columns / 2;
-            int x = panelIndex == 0 ? 0 : width;
-            int panelWidth = panelIndex == 0 ? width : columns - width;
-            return new Bounds(x, 0, panelWidth, rows);
-        }
+        int gridColumns = gridColumns();
+        int gridRows = panels.length / gridColumns;
+        int column = panelIndex % gridColumns;
+        int row = panelIndex / gridColumns;
+        int x = size.getColumns() * column / gridColumns;
+        int nextX = size.getColumns() * (column + 1) / gridColumns;
+        int y = size.getRows() * row / gridRows;
+        int nextY = size.getRows() * (row + 1) / gridRows;
+        return new Bounds(x, y, nextX - x, nextY - y);
+    }
 
-        int width = columns / 2;
-        int height = rows / 2;
-        int column = panelIndex % 2;
-        int row = panelIndex / 2;
-        int x = column == 0 ? 0 : width;
-        int y = row == 0 ? 0 : height;
-        int panelWidth = column == 0 ? width : columns - width;
-        int panelHeight = row == 0 ? height : rows - height;
-        return new Bounds(x, y, panelWidth, panelHeight);
+    private int gridColumns() {
+        if (panels.length == 2) {
+            return 2;
+        }
+        return (int) Math.sqrt(panels.length);
     }
 
     private void drawPanelBorder(TextGraphics graphics, Bounds bounds) {

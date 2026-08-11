@@ -11,7 +11,7 @@ public class EventHandler implements SorterProtocol {
 
     private int triggerEvery = 1;
     private SorterProtocol forwarder;
-    private SortSpeed speed = SortSpeed.MEDIUM;
+    private int delayMillis = 100;
 
     private int counter = 0;
     private int totalCounter = 0;
@@ -21,10 +21,10 @@ public class EventHandler implements SorterProtocol {
     private int totalWrite = 0;
 
     @Builder
-    public EventHandler(int triggerEvery, SorterProtocol forwarder, SortSpeed speed) {
+    public EventHandler(int triggerEvery, SorterProtocol forwarder, int delayMillis) {
         this.triggerEvery = triggerEvery;
         this.forwarder = forwarder;
-        this.speed = speed;
+        this.delayMillis = delayMillis;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class EventHandler implements SorterProtocol {
 
     private void delay() {
         try {
-            Thread.sleep(speed.delayMillis());
+            Thread.sleep(delayMillis);
         } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
             throw new SortInterruptedException();

@@ -1,10 +1,23 @@
 # Sorty
 
 Sorty is a Java 26 command-line sorting visualizer. It generates random integers, sorts them with the current sorting algorithm, and can display progress in a fullscreen Lanterna text UI or as console logs.
+![animated-screen-shot-4x4.gif](images/animated-screen-shot-4x4.gif)
 
 The project is a Gradle multi-project build with one module:
 
 - `sorty`
+
+## Snapshots
+
+Bubble sort - yellow comparing
+![screenshot-bubble-sort-1.png](images/screenshot-bubble-sort-1.png)
+
+Bubble sort - orange swapping
+![screenshot-bubble-sort-2.png](images/screenshot-bubble-sort-2.png)
+
+Bubble sort - almost done
+![screenshot-bubble-sort-3.png](images/screenshot-bubble-sort-3.png)
+
 
 ## Requirements
 
@@ -69,8 +82,8 @@ Pause the Lanterna UI with Space. Press `n` while paused to advance one frame, o
 ## CLI Options
 
 ```text
-Usage: sorty [-24cdfhlmsvV] [-vv] [--wait] [--algorithm=ALGORITHM] [-from=MIN]
-             [-n=TOTAL] [--seed=SEED] [--speed=SPEED] [-to=MAX]
+Usage: sorty [-249cdhlvV] [-16] [-vv] [--wait] [--algorithm=ALGORITHM]
+             [--delay=MS] [-from=MIN] [-n=TOTAL] [--seed=SEED] [-to=MAX]
 ```
 
 Options:
@@ -80,25 +93,21 @@ Options:
 - `-from`, `--from=MIN`: smallest generated number. Default: `10`.
 - `-to`, `--to=MAX`: largest generated number. Default: `100`.
 - `--algorithm=ALGORITHM`: sorting algorithm list. Use one name, comma-separated names like `BUBBLE,QUICK`, or `*` for all algorithms. Default: `BUBBLE`.
+- `--delay=MS`: delay between visualization events in milliseconds. Default: `100`. Use `0` for no delay.
 - `-2`: run selected algorithms in batches of 2 for split-screen comparison.
 - `-4`: run selected algorithms in batches of 4 for split-screen comparison. With `--algorithm=*`, algorithms are processed in enum order, four at a time.
+- `-9`: run selected algorithms in batches of 9 for 3x3 split-screen comparison on large screens.
+- `-16`: run selected algorithms in batches of 16 for 4x4 split-screen comparison on large screens.
 - `-d`, `--descending`: sort largest to smallest.
 - `-l`, `--lanterna`: use fullscreen Lanterna text UI. This is the default.
 - `--wait`: keep the final Lanterna screen open until any key is pressed. When multiple algorithms or batches run, only the last one waits.
 - `-c`, `--console`: use console UI logging instead of Lanterna.
 - `-v`: verbose output.
 - `-vv`: extra verbose output.
-- `-f`, `--fast`: fast visualization speed, `50ms` delay.
-- `-m`, `--medium`: medium visualization speed, `100ms` delay.
-- `-s`, `--slow`: slow visualization speed, `200ms` delay.
-- `--speed=SPEED`: explicit speed enum: `FAST`, `MEDIUM`, or `SLOW`. Default: `MEDIUM`.
 - `-h`, `--help`: show help.
 - `-V`, `--version`: show version.
 
-Only one startup speed shortcut may be selected at a time: `--slow`, `--medium`, or `--fast`.
-Only one split option may be selected at a time: `-2` or `-4`.
-
-Important: `-s` is the short option for `--slow`. Use `--seed` for random seed values.
+Only one split option may be selected at a time: `-2`, `-4`, `-9`, or `-16`.
 
 ## Sort Algorithms
 
@@ -135,25 +144,13 @@ Lanterna renders bars in the terminal: was an Google Code and now on github http
 
 Console UI logs protocol events and summary counters when verbose flags are enabled.
 
-### Snapshots
-
-Bubble sort - yellow comparing
-![screenshot-bubble-sort-1.png](images/screenshot-bubble-sort-1.png)
-
-Bubble sort - orange swapping
-![screenshot-bubble-sort-2.png](images/screenshot-bubble-sort-2.png)
-
-
-Bubble sort - almost done
-![screenshot-bubble-sort-3.png](images/screenshot-bubble-sort-3.png)
-
 ## Development Notes
 
 The core flow is:
 
 - `Sorty`: Picocli command and option parsing.
 - `Sorter`: random number generation and algorithm wiring.
-- `EventHandler`: protocol counters and speed throttling.
+- `EventHandler`: protocol counters and delay throttling.
 - `SorterProtocol`: UI/event protocol.
 - `BubbleSorter`: bubble sort implementation.
 - `InsertSorter`: insertion sort implementation.

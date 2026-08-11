@@ -71,24 +71,6 @@ public class Sorty implements Callable<Integer> {
     private boolean wait;
 
     @Option(
-        names = {"-s", "--slow"},
-        description = "Use slow visualization speed (200ms)."
-    )
-    private boolean slow;
-
-    @Option(
-        names = {"-m", "--medium"},
-        description = "Use medium visualization speed (100ms)."
-    )
-    private boolean medium;
-
-    @Option(
-        names = {"-f", "--fast"},
-        description = "Use fast visualization speed (50ms)."
-    )
-    private boolean fast;
-
-    @Option(
         names = {"-n", "--number-count"},
         defaultValue = "20",
         paramLabel = "TOTAL",
@@ -121,12 +103,12 @@ public class Sorty implements Callable<Integer> {
     private int to;
 
     @Option(
-        names = "--speed",
-        defaultValue = "MEDIUM",
-        paramLabel = "SPEED",
-        description = "Sort visualization speed: FAST=50ms, MEDIUM=100ms, SLOW=200ms. Default: ${DEFAULT-VALUE}."
+        names = "--delay",
+        defaultValue = "100",
+        paramLabel = "MS",
+        description = "Delay between visualization events in milliseconds. Default: ${DEFAULT-VALUE}."
     )
-    private SortSpeed speed;
+    private int delayMillis;
 
     @Option(
         names = "--algorithm",
@@ -147,6 +129,18 @@ public class Sorty implements Callable<Integer> {
         description = "Run selected algorithms in batches of 4 for split-screen comparison."
     )
     private boolean splitFour;
+
+    @Option(
+        names = "-9",
+        description = "Run selected algorithms in batches of 9 for 3x3 split-screen comparison on large screens."
+    )
+    private boolean splitNine;
+
+    @Option(
+        names = "-16",
+        description = "Run selected algorithms in batches of 16 for 4x4 split-screen comparison on large screens."
+    )
+    private boolean splitSixteen;
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new Sorty()).execute(args);
@@ -173,16 +167,16 @@ public class Sorty implements Callable<Integer> {
                 "The range between -from and -to is too large."
             );
         }
-        if (selectedStartupSpeeds() > 1) {
+        if (delayMillis < 0) {
             throw new CommandLine.ParameterException(
                 spec.commandLine(),
-                "Only one of --slow, --medium, or --fast can be selected."
+                "Option --delay must be greater than or equal to 0."
             );
         }
-        if (splitTwo && splitFour) {
+        if (selectedSplitOptions() > 1) {
             throw new CommandLine.ParameterException(
                 spec.commandLine(),
-                "Only one of -2 or -4 can be selected."
+                "Only one of -2, -4, -9, or -16 can be selected."
             );
         }
 
@@ -219,7 +213,7 @@ public class Sorty implements Callable<Integer> {
         }
 
         for (SortAlgorithm selectedAlgorithm : algorithms) {
-            var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedAlgorithm, selectedSpeed());
+            var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedAlgorithm, delayMillis);
             sorter.setUiDelegate(this.uiDelegate(isLastBatch));
             Integer[] result = sorter.sort(input);
             formatResult(selectedAlgorithm, result, includeAlgorithmName);
@@ -238,7 +232,7 @@ public class Sorty implements Callable<Integer> {
         try (LanternaGridUiDelegate grid = new LanternaGridUiDelegate(panelCount, wait && isLastBatch)) {
             for (int index = 0; index < algorithms.size(); index++) {
                 SortAlgorithm selectedAlgorithm = algorithms.get(index);
-                var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedAlgorithm, selectedSpeed());
+                var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedAlgorithm, delayMillis);
                 sorter.setUiDelegate(grid.panel(index));
                 results.add(sorter.sort(input));
             }
@@ -283,6 +277,12 @@ public class Sorty implements Callable<Integer> {
     }
 
     private int selectedBatchSize() {
+        if (splitSixteen) {
+            return 16;
+        }
+        if (splitNine) {
+            return 9;
+        }
         if (splitFour) {
             return 4;
         }
@@ -292,31 +292,21 @@ public class Sorty implements Callable<Integer> {
         return 1;
     }
 
-    private int selectedStartupSpeeds() {
+    private int selectedSplitOptions() {
         int selected = 0;
-        if (slow) {
+        if (splitTwo) {
             selected++;
         }
-        if (medium) {
+        if (splitFour) {
             selected++;
         }
-        if (fast) {
+        if (splitNine) {
+            selected++;
+        }
+        if (splitSixteen) {
             selected++;
         }
         return selected;
-    }
-
-    private SortSpeed selectedSpeed() {
-        if (slow) {
-            return SortSpeed.SLOW;
-        }
-        if (medium) {
-            return SortSpeed.MEDIUM;
-        }
-        if (fast) {
-            return SortSpeed.FAST;
-        }
-        return speed;
     }
 
     private SorterProtocol uiDelegate(boolean waitForKeyBeforeClose) {
