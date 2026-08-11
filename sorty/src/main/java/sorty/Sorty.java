@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,6 +146,12 @@ public class Sorty implements Callable<Integer> {
     )
     private boolean splitSixteen;
 
+    @Option(
+        names = "--parallel",
+        description = "Run split-screen batches concurrently."
+    )
+    private boolean parallel;
+
     public static void main(String[] args) {
         int exitCode = new CommandLine(new Sorty()).execute(args);
         System.exit(exitCode);
@@ -177,6 +187,12 @@ public class Sorty implements Callable<Integer> {
             throw new CommandLine.ParameterException(
                 spec.commandLine(),
                 "Only one of -2, -4, -9, or -16 can be selected."
+            );
+        }
+        if (parallel && !parallelBatchSelected()) {
+            throw new CommandLine.ParameterException(
+                spec.commandLine(),
+                "Option --parallel requires -2, -4, -9, or -16."
             );
         }
 
@@ -230,15 +246,66 @@ public class Sorty implements Callable<Integer> {
     ) {
         List<Integer[]> results = new ArrayList<>();
         try (LanternaGridUiDelegate grid = new LanternaGridUiDelegate(panelCount, wait && isLastBatch)) {
-            for (int index = 0; index < algorithms.size(); index++) {
-                SortAlgorithm selectedAlgorithm = algorithms.get(index);
-                var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedAlgorithm, delayMillis);
-                sorter.setUiDelegate(grid.panel(index));
-                results.add(sorter.sort(input));
+            if (parallel) {
+                results.addAll(sortParallel(algorithms, input, direction, grid));
+            } else {
+                for (int index = 0; index < algorithms.size(); index++) {
+                    SortAlgorithm selectedAlgorithm = algorithms.get(index);
+                    var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedAlgorithm, delayMillis);
+                    sorter.setUiDelegate(grid.panel(index));
+                    results.add(sorter.sort(input));
+                }
             }
         }
         for (int index = 0; index < algorithms.size(); index++) {
             formatResult(algorithms.get(index), results.get(index), includeAlgorithmName);
+        }
+    }
+
+    private List<Integer[]> sortParallel(
+        List<SortAlgorithm> algorithms,
+        Integer[] input,
+        SortDirection direction,
+        LanternaGridUiDelegate grid
+    ) {
+        ExecutorService executor = Executors.newFixedThreadPool(algorithms.size());
+        try {
+            List<Future<Integer[]>> futures = new ArrayList<>();
+            for (int index = 0; index < algorithms.size(); index++) {
+                SortAlgorithm selectedAlgorithm = algorithms.get(index);
+                SorterProtocol panel = grid.panel(index);
+                futures.add(executor.submit(() -> {
+                    var sorter = new Sorter(totalNumbers, from, to, direction, seed, selectedAlgorithm, delayMillis);
+                    sorter.setUiDelegate(panel);
+                    return sorter.sort(input);
+                }));
+            }
+
+            List<Integer[]> results = new ArrayList<>();
+            for (Future<Integer[]> future : futures) {
+                results.add(await(future));
+            }
+            return results;
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    private Integer[] await(Future<Integer[]> future) {
+        try {
+            return future.get();
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new SortInterruptedException();
+        } catch (ExecutionException exception) {
+            Throwable cause = exception.getCause();
+            if (cause instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (cause instanceof Error error) {
+                throw error;
+            }
+            throw new IllegalStateException("Parallel sort failed.", cause);
         }
     }
 
@@ -307,6 +374,10 @@ public class Sorty implements Callable<Integer> {
             selected++;
         }
         return selected;
+    }
+
+    private boolean parallelBatchSelected() {
+        return splitTwo || splitFour || splitNine || splitSixteen;
     }
 
     private SorterProtocol uiDelegate(boolean waitForKeyBeforeClose) {

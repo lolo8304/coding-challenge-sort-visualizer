@@ -1,7 +1,13 @@
 # Sorty
 
 Sorty is a Java 26 command-line sorting visualizer. It generates random integers, sorts them with the current sorting algorithm, and can display progress in a fullscreen Lanterna text UI or as console logs.
+
+Video 9x9 sequential
 ![animated-screen-shot-4x4.gif](images/animated-screen-shot-4x4.gif)
+
+Video from 16 in parallel
+![animated-screen-shot-16x16-parallel.gif](images/animated-screen-shot-16x16-parallel.gif)
+
 
 The project is a Gradle multi-project build with one module:
 
@@ -82,8 +88,9 @@ Pause the Lanterna UI with Space. Press `n` while paused to advance one frame, o
 ## CLI Options
 
 ```text
-Usage: sorty [-249cdhlvV] [-16] [-vv] [--wait] [--algorithm=ALGORITHM]
-             [--delay=MS] [-from=MIN] [-n=TOTAL] [--seed=SEED] [-to=MAX]
+Usage: sorty [-249cdhlvV] [-16] [--parallel] [-vv] [--wait]
+             [--algorithm=ALGORITHM] [--delay=MS] [-from=MIN] [-n=TOTAL]
+             [--seed=SEED] [-to=MAX]
 ```
 
 Options:
@@ -98,6 +105,7 @@ Options:
 - `-4`: run selected algorithms in batches of 4 for split-screen comparison. With `--algorithm=*`, algorithms are processed in enum order, four at a time.
 - `-9`: run selected algorithms in batches of 9 for 3x3 split-screen comparison on large screens.
 - `-16`: run selected algorithms in batches of 16 for 4x4 split-screen comparison on large screens.
+- `--parallel`: run split-screen batches concurrently. Works with `-2`, `-4`, `-9`, or `-16`; results are still printed in algorithm order after the batch completes.
 - `-d`, `--descending`: sort largest to smallest.
 - `-l`, `--lanterna`: use fullscreen Lanterna text UI. This is the default.
 - `--wait`: keep the final Lanterna screen open until any key is pressed. When multiple algorithms or batches run, only the last one waits.
@@ -107,7 +115,7 @@ Options:
 - `-h`, `--help`: show help.
 - `-V`, `--version`: show version.
 
-Only one split option may be selected at a time: `-2`, `-4`, `-9`, or `-16`.
+Only one split option may be selected at a time: `-2`, `-4`, `-9`, or `-16`. `--parallel` requires one of those split options.
 
 ## Sort Algorithms
 

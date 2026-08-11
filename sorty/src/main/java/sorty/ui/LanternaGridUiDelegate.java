@@ -293,7 +293,7 @@ public final class LanternaGridUiDelegate implements AutoCloseable {
             && character == 'n';
     }
 
-    private void closeScreen() {
+    private synchronized void closeScreen() {
         if (screen == null) {
             return;
         }
@@ -308,7 +308,7 @@ public final class LanternaGridUiDelegate implements AutoCloseable {
         }
     }
 
-    private void closeScreenQuietly() {
+    private synchronized void closeScreenQuietly() {
         if (screen == null) {
             return;
         }
@@ -393,22 +393,26 @@ public final class LanternaGridUiDelegate implements AutoCloseable {
 
         @Override
         public void setNumbers(Integer[] numbers) {
-            this.numbers = numbers;
-            draw();
+            synchronized (LanternaGridUiDelegate.this) {
+                this.numbers = numbers;
+                draw();
+            }
         }
 
         @Override
         public void start(String algorithm, int size) {
-            this.algorithm = algorithm;
-            this.action = "start";
-            this.total = 0;
-            this.compare = 0;
-            this.swap = 0;
-            this.access = 0;
-            this.write = 0;
-            this.index1 = -1;
-            this.index2 = -1;
-            draw();
+            synchronized (LanternaGridUiDelegate.this) {
+                this.algorithm = algorithm;
+                this.action = "start";
+                this.total = 0;
+                this.compare = 0;
+                this.swap = 0;
+                this.access = 0;
+                this.write = 0;
+                this.index1 = -1;
+                this.index2 = -1;
+                draw();
+            }
         }
 
         @Override
@@ -417,45 +421,55 @@ public final class LanternaGridUiDelegate implements AutoCloseable {
 
         @Override
         public void finish(int total, int compare, int swap, int access) {
-            this.total = total;
-            this.compare = compare;
-            this.swap = swap;
-            this.access = access;
-            this.action = "finished";
-            this.index1 = -1;
-            this.index2 = -1;
-            draw();
+            synchronized (LanternaGridUiDelegate.this) {
+                this.total = total;
+                this.compare = compare;
+                this.swap = swap;
+                this.access = access;
+                this.action = "finished";
+                this.index1 = -1;
+                this.index2 = -1;
+                draw();
+            }
         }
 
         @Override
         public void compare(int index1, int index2) {
-            this.compare++;
-            this.total++;
-            mark(index1, index2, "compare");
+            synchronized (LanternaGridUiDelegate.this) {
+                this.compare++;
+                this.total++;
+                mark(index1, index2, "compare");
+            }
         }
 
         @Override
         public void swap(int index1, int index2) {
-            this.swap++;
-            this.total++;
-            mark(index1, index2, "swap");
+            synchronized (LanternaGridUiDelegate.this) {
+                this.swap++;
+                this.total++;
+                mark(index1, index2, "swap");
+            }
         }
 
         @Override
         public int at(int index) {
-            this.access++;
-            this.total++;
-            mark(index, -1, "at");
-            return numbers[index];
+            synchronized (LanternaGridUiDelegate.this) {
+                this.access++;
+                this.total++;
+                mark(index, -1, "at");
+                return numbers[index];
+            }
         }
 
         @Override
         public int put(int index, int value) {
-            this.write++;
-            this.total++;
-            this.numbers[index] = value;
-            mark(index, -1, "put");
-            return value;
+            synchronized (LanternaGridUiDelegate.this) {
+                this.write++;
+                this.total++;
+                this.numbers[index] = value;
+                mark(index, -1, "put");
+                return value;
+            }
         }
 
         private void mark(int index1, int index2, String action) {

@@ -56,6 +56,7 @@ class SortyTest {
         assertTrue(commandLine.getCommandSpec().findOption("-4").isOption());
         assertTrue(commandLine.getCommandSpec().findOption("-9").isOption());
         assertTrue(commandLine.getCommandSpec().findOption("-16").isOption());
+        assertTrue(commandLine.getCommandSpec().findOption("--parallel").isOption());
     }
 
     @Test
@@ -133,6 +134,20 @@ class SortyTest {
         int exitCode = new CommandLine(new Sorty()).execute("-n", "3", "-9", "-16");
 
         assertEquals(2, exitCode);
+    }
+
+    @Test
+    void commandRejectsParallelWithoutParallelCapableSplit() {
+        int exitCode = new CommandLine(new Sorty()).execute("-n", "3", "--parallel");
+
+        assertEquals(2, exitCode);
+    }
+
+    @Test
+    void commandAcceptsParallelWithTwoWaySplit() {
+        int exitCode = new CommandLine(new Sorty()).execute("--console", "-n", "3", "-2", "--parallel");
+
+        assertEquals(0, exitCode);
     }
 
     @Test
